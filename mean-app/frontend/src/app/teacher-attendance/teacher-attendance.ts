@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { StudentService, Student } from '../services/student.service';
 
 @Component({
@@ -19,7 +21,9 @@ import { StudentService, Student } from '../services/student.service';
     MatButtonModule,
     MatSelectModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatFormFieldModule
   ],
   templateUrl: './teacher-attendance.html',
   styleUrl: './teacher-attendance.scss'

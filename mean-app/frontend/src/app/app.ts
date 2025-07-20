@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  imports: [CommonModule]
 })
-export class App {
-  title = 'Student Attendance Management System';
+export class AppComponent {
+  showTeacherAttendanceNav = false;
+
+  constructor() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.showTeacherAttendanceNav = ['teacher', 'admin'].includes(user.role);
+  }
 }
