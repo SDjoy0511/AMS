@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  standalone: true,
   selector: 'app-root',
+  standalone: true,
   templateUrl: './app.html',
-  imports: [CommonModule]
+  imports: [
+    CommonModule,
+    RouterModule
+  ]
 })
 export class AppComponent {
   showTeacherAttendanceNav = false;
@@ -15,3 +19,4 @@ export class AppComponent {
     this.showTeacherAttendanceNav = ['teacher', 'admin'].includes(user.role);
   }
 }
+export default AppComponent;
