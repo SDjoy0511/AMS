@@ -1,0 +1,191 @@
+<div class="student-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <h1>Student Dashboard</h1>
+      <div class="user-info">
+        <span>Welcome, {{ currentUser?.username }}</span>
+        <button mat-icon-button (click)="logout()" matTooltip="Logout">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div *ngIf="loading" class="loading-container">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p>Loading student information...</p>
+    </div>
+
+    <div *ngIf="!loading && !student" class="no-data">
+      <mat-card>
+        <mat-card-content>
+          <h2>Student Profile</h2>
+          <p>Student profile view is not yet implemented. This feature requires proper mapping between user accounts and student records.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="!loading && student" class="student-dashboard">
+      <!-- Student Information Card -->
+      <mat-card class="student-info-card">
+        <mat-card-header>
+          <mat-card-title>{{ student.fullName }}</mat-card-title>
+          <mat-card-subtitle>Student ID: {{ student.studentId }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="student-details">
+            <div class="detail-row">
+              <span class="label">Class:</span>
+              <span class="value">{{ student.class }} - {{ student.section }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Academic Year:</span>
+              <span class="value">{{ student.academicYear }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Gender:</span>
+              <span class="value">{{ student.gender | titlecase }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Phone:</span>
+              <span class="value">{{ student.phone || 'Not provided' }}</span>
+            </div>
+          </div>
+          
+          <!-- Attendance Percentage -->
+          <div class="attendance-summary">
+            <h3>Attendance Summary</h3>
+            <div class="attendance-percentage">
+              <mat-progress-bar 
+                [value]="student.attendancePercentage" 
+                color="primary"
+                class="attendance-bar">
+              </mat-progress-bar>
+              <span class="percentage-text">{{ student.attendancePercentage }}%</span>
+            </div>
+            <p class="attendance-description">
+              Present: {{ getPresentOrLateCount(student) }} 
+              | Total: {{ student.attendance.length }} days
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Classmates and Section Analytics -->
+      <mat-card class="section-info-card" style="margin-top: 1.5rem;">
+        <mat-card-header>
+          <mat-card-title>Section Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="sectionAverageAttendance !== null">
+            <p><strong>Section Average Attendance:</strong> {{ sectionAverageAttendance }}%</p>
+          </div>
+          <div *ngIf="classmates.length > 0">
+            <h4>Classmates</h4>
+            <table mat-table [dataSource]="classmates" class="mat-elevation-z2" style="width: 100%; margin-bottom: 1rem;">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let s">{{ s.fullName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="attendance">
+                <th mat-header-cell *matHeaderCellDef>Attendance %</th>
+                <td mat-cell *matCellDef="let s">{{ s.attendancePercentage }}%</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="['name', 'attendance']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['name', 'attendance'];"></tr>
+            </table>
+          </div>
+          <div *ngIf="classmates.length === 0">
+            <p>No classmates found in your section.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Attendance Records Card -->
+      <mat-card class="attendance-card">
+        <mat-card-header>
+          <mat-card-title>Attendance Records</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Filter Form -->
+          <form [formGroup]="filterForm" (ngSubmit)="onFilterSubmit()" class="filter-form">
+            <div class="filter-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Start Date</mat-label>
+                <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+                <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                <mat-datepicker #startPicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>End Date</mat-label>
+                <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+                <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                <mat-datepicker #endPicker></mat-datepicker>
+              </mat-form-field>
+
+              <button mat-raised-button color="primary" type="submit" [disabled]="attendanceLoading">
+                Filter
+              </button>
+              <button mat-button type="button" (click)="clearFilters()">
+                Clear
+              </button>
+            </div>
+          </form>
+
+          <!-- Attendance Table -->
+          <div *ngIf="attendanceLoading" class="loading-table">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </div>
+
+          <div *ngIf="!attendanceLoading" class="table-container">
+            <table mat-table [dataSource]="attendanceRecords" class="attendance-table">
+              <!-- Date Column -->
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let record">{{ formatDate(record.date) }}</td>
+              </ng-container>
+
+              <!-- Status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let record">
+                  <mat-chip [color]="getStatusColor(record.status)" selected>
+                    <mat-icon>{{ getStatusIcon(record.status) }}</mat-icon>
+                    {{ record.status | titlecase }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <!-- Remarks Column -->
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                <td mat-cell *matCellDef="let record">{{ record.remarks || '-' }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <!-- Pagination -->
+            <mat-paginator 
+              [length]="totalRecords"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="pageSizeOptions"
+              [pageIndex]="currentPage"
+              (page)="onPageChange($event)"
+              showFirstLastButtons>
+            </mat-paginator>
+          </div>
+
+          <div *ngIf="!attendanceLoading && attendanceRecords.length === 0" class="no-records">
+            <p>No attendance records found for the selected date range.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

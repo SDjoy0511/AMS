@@ -1,0 +1,4 @@
+<ng-container *ngIf="(window as any).showTeacherAttendanceNav === undefined ? (window as any).showTeacherAttendanceNav = (JSON.parse(localStorage.getItem('user') || '{}').role === 'teacher' || JSON.parse(localStorage.getItem('user') || '{}').role === 'admin') : (window as any).showTeacherAttendanceNav">
+  <button routerLink="/teacher-attendance" style="margin: 1rem;">Teacher Attendance</button>
+</ng-container>
+<router-outlet></router-outlet>

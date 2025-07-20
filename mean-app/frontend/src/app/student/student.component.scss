@@ -1,0 +1,235 @@
+.student-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info span {
+  font-size: 14px;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-container p {
+  margin-top: 16px;
+  color: #666;
+}
+
+.no-data {
+  margin-bottom: 24px;
+}
+
+.no-data mat-card {
+  text-align: center;
+  padding: 40px;
+}
+
+.no-data h2 {
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.no-data p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.student-dashboard {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr 2fr;
+}
+
+.student-info-card {
+  height: fit-content;
+}
+
+.student-info-card mat-card-header {
+  margin-bottom: 16px;
+}
+
+.student-details {
+  margin-bottom: 24px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 500;
+  color: #666;
+}
+
+.value {
+  color: #333;
+}
+
+.attendance-summary {
+  border-top: 1px solid #eee;
+  padding-top: 16px;
+}
+
+.attendance-summary h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.attendance-percentage {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.attendance-bar {
+  flex: 1;
+}
+
+.percentage-text {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 60px;
+  text-align: right;
+}
+
+.attendance-description {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.attendance-card {
+  min-height: 400px;
+}
+
+.filter-form {
+  margin-bottom: 24px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-row mat-form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.loading-table {
+  padding: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.attendance-table {
+  width: 100%;
+}
+
+.attendance-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.attendance-table td {
+  padding: 12px 8px;
+}
+
+.no-records {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .student-dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .filter-row {
+    flex-direction: column;
+  }
+  
+  .filter-row mat-form-field {
+    min-width: 100%;
+  }
+  
+  .main-content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 20px;
+  }
+  
+  .user-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+} 

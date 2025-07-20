@@ -1,0 +1,52 @@
+<mat-card>
+  <form [formGroup]="attendanceForm" (ngSubmit)="submitAttendance()">
+    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+      <mat-form-field appearance="fill">
+        <mat-label>Class</mat-label>
+        <mat-select formControlName="class" required>
+          <mat-option *ngFor="let c of classOptions" [value]="c">{{c}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Section</mat-label>
+        <mat-select formControlName="section" required>
+          <mat-option *ngFor="let s of sectionOptions" [value]="s">{{s}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" formControlName="date" required>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="loadStudents()" [disabled]="loading">Load Students</button>
+    </div>
+
+    <div *ngIf="students.length > 0" style="margin-top: 2rem;">
+      <table mat-table [dataSource]="students" class="mat-elevation-z8" style="width: 100%;">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let student"> {{student.fullName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let student; let i = index">
+            <mat-select [formControl]="attendanceForm.get('records').value[i].status" [(ngModel)]="attendanceForm.value.records[i].status">
+              <mat-option value="present">Present</mat-option>
+              <mat-option value="absent">Absent</mat-option>
+              <mat-option value="late">Late</mat-option>
+              <mat-option value="excused">Excused</mat-option>
+            </mat-select>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef> Remarks </th>
+          <td mat-cell *matCellDef="let student; let i = index">
+            <input matInput [(ngModel)]="attendanceForm.value.records[i].remarks" placeholder="Remarks">
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['name', 'status', 'remarks']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name', 'status', 'remarks'];"></tr>
+      </table>
+      <button mat-raised-button color="accent" type="submit" [disabled]="loading" style="margin-top: 1rem;">Submit Attendance</button>
+    </div>
+  </form>
+</mat-card>
