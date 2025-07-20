@@ -19,4 +19,3 @@ export class AppComponent {
     this.showTeacherAttendanceNav = ['teacher', 'admin'].includes(user.role);
   }
 }
-export default AppComponent;

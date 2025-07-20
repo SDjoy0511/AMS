@@ -1,2 +1,2 @@
-import App from './app/app';
-export default App;
+import { AppComponent } from './app/app';
+export default AppComponent;
